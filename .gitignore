@@ -1,11 +1,53 @@
-# History files
-.Rhistory
 
-# Example code in package build process
-*-Ex.R
+#EntropyFunctions
 
-# R data files from past sessions
-.Rdata
 
-# RStudio files
-.Rproj.user/
+DF<-entropy.test.file
+
+Entro<- function(q){
+  qi<- -q*log2(q)
+  return(qi)
+}
+
+Entropy<- function(DF){
+test1<- subset(DF,V4==0)
+q1<-nrow(test1)/(nrow(DF)-1)
+test2<-subset(DF,V4==1)
+q2<-nrow(test2)/(nrow(DF)-1)
+Ent<-(Entro(q1)+Entro(q2))
+return(Ent)
+}
+Entropy(DF)
+
+infogain<- function(DF,attr1){
+    
+    a<- nrow(subset(entropy.test.file,V1==1&V4==0))#229
+    b<- nrow(subset(entropy.test.file,V1==1&V4==1))#171
+    c<- nrow(subset(entropy.test.file,V1==0&V4==0))#347
+    d<- nrow(subset(entropy.test.file,V1==0&V4==1))#253
+    attr1.0 <- nrow(subset(entropy.test.file,V1==0)) #600
+    attr1.1 <- nrow(subset(entropy.test.file,V1==1))# 400
+A=Entro(347/600)+Entro(253/600)
+B=Entro(229/400)+Entro(171/400)
+y=(4/10)*B +(6/10)*A
+Entropy(DF)-y
+return(Entropy(DF)-y)
+}
+infogain(DF,attr1)
+
+infogain.attr1<-2.411565e-05
+infogain.attr2<- 0.2599038
+infogain.attr3<- 0.002432707
+DF<-entropy.test.file
+decide<-function(DF,n){
+  n<-ncol(DF)
+  infogains<-c(infogain.attr1,infogain.attr2,infogain.attr3)
+  Maxinfo<-which.max
+  vinfor<-c(infogain.attr1,infogain.attr2,infogain.attr3)
+  names(vinfor)<- c("first att","second att","third att")
+  listinfo<- list(Maxinfo,vinfor)
+  return (listinfo)
+}
+  
+decide(DF,4)
+
